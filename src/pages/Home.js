@@ -1,15 +1,21 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import main from "../assets/briefcase2.png";
-import { useGlobalContext } from "../context/appContext";
 import { Redirect } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Jobs from "../components/Jobs";
+import { useEffect } from "react";
+import { useGlobalContext } from "../context/appContext";
 function Home() {
-  const { user } = useGlobalContext();
+  const { isLoading, showAlert, fetchJobs, user } = useGlobalContext();
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   return (
     <>
-      {user && <Redirect to="/dashboard" />}
+      {/* {user && <Redirect to="/dashboard" />} */}
       <Wrapper>
         <Navbar />
         <div className="container page">
@@ -26,7 +32,10 @@ function Home() {
               Login / Register
             </Link>
           </div>
-          <img src={main} alt="job hunt" className="img main-img" />
+          <img src={main} alt="job " className="img main-img" />
+        </div>
+        <div className="jobs page">
+          <Jobs />
         </div>
       </Wrapper>
     </>
@@ -53,6 +62,9 @@ const Wrapper = styled.div`
   }
   .main-img {
     display: none;
+  }
+  .jobs {
+    margin-bottom: 10em;
   }
   @media (min-width: 992px) {
     .container {
