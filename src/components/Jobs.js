@@ -68,7 +68,11 @@ const Jobs = () => {
               <span className="company">{company}</span>
               <span className="date">{date}</span>
               <StatusContainer className="status" status={status}>
-                {status}
+                {status === "under45k"
+                  ? "< 45K"
+                  : status === "between45k-70k"
+                  ? "45K-70k"
+                  : "> 70K"}
               </StatusContainer>
               <div className="action-div">
                 {allFavorites.includes(id) ? (
@@ -261,13 +265,13 @@ const Container = styled.section`
   }
 `;
 const setStatusColor = (status) => {
-  if (status === "interview") return "#0f5132";
-  if (status === "declined") return "#842029";
+  if (status === "morethan70k") return "#0f5132";
+  if (status === "under45k") return "#842029";
   return "#927238";
 };
 const setStatusBackground = (status) => {
-  if (status === "interview") return "#d1e7dd";
-  if (status === "declined") return "#f8d7da";
+  if (status === "morethan70k") return "#d1e7dd";
+  if (status === "under45k") return "#f8d7da";
   return "#f7f3d7";
 };
 

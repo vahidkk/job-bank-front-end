@@ -102,7 +102,7 @@ const AppProvider = ({ children }) => {
       logout();
     }
   };
-  //fetch ALL jobs ( by any user tobe shown on home page)
+  //fetch ALL jobs ( by any user to  show on home page)
   const fetchAllJobs = async () => {
     setLoading();
     try {
@@ -188,23 +188,11 @@ const AppProvider = ({ children }) => {
     setLoading();
     try {
       await axios.delete(`/favorites/${favoriteJobId}`);
-      // await axios.delete(`/favorites/620b6e4269cb77a477b01542`);
       fetchAllFavorites();
     } catch (error) {
       dispatch({ type: DELETE_FAVORITE_ERROR });
     }
   };
-
-  // const deleteJob = async (jobId) => {
-  //   setLoading();
-  //   try {
-  //     await axios.delete(`/jobs/${jobId}`);
-
-  //     fetchJobs();
-  //   } catch (error) {
-  //     dispatch({ type: DELETE_JOB_ERROR });
-  //   }
-  // };
 
   useEffect(() => {
     const user = localStorage.getItem("user");
