@@ -1,19 +1,37 @@
-import { useGlobalContext } from '../context/appContext';
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import moment from 'moment';
-import JobColumns from './JobColumns';
+import { useGlobalContext } from "../context/appContext";
+import React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { FaEdit, FaTrash, FaStar } from "react-icons/fa";
+import moment from "moment";
+import JobColumns from "./JobColumns";
+import { useLocation, useHistory } from "react-router-dom";
 
 const Jobs = () => {
-  const { jobs, isLoading, deleteJob } = useGlobalContext();
+  const {
+    jobs,
+    user,
+    userId,
+    allJobs,
+    isLoading,
+    deleteJob,
+    favorites,
+    createFavorite,
+    deleteFavorite,
+  } = useGlobalContext();
+  const location = useLocation();
+  let navigate = useHistory();
+
+  console.log("userid:", userId);
 
   if (isLoading) {
-    return <div className='loading'></div>;
+    return <div className="loading"></div>;
   }
 
-  if (jobs.length < 1) {
+  if (
+    (location.pathname == !"/" && jobs.length < 1) ||
+    (location.pathname === "/" && allJobs.length < 1)
+  ) {
     return (
       <EmptyContainer>
         <h5>
@@ -23,35 +41,65 @@ const Jobs = () => {
       </EmptyContainer>
     );
   }
+  let currentJobs = location.pathname === "/" ? allJobs : jobs;
+  const allFavorites = favorites.map((i) => {
+    return i.jobId;
+  });
 
   return (
     <>
       <JobColumns />
       <Container>
-        {jobs.map((item) => {
-          const { _id: id, company, position, status, createdAt } = item;
+        {currentJobs.map((item) => {
+          const {
+            _id: id,
+            company,
+            position,
+            status,
+            createdAt,
+            createdBy,
+          } = item;
           let date = moment(createdAt);
-          date = date.format('MMMM Do, YYYY');
+          date = date.format("MMMM Do, YYYY");
           return (
-            <article key={id} className='job'>
-              <span className='icon'>{company.charAt(0)}</span>
-              <span className='position'>{position.toLowerCase()}</span>
-              <span className='company'>{company}</span>
-              <span className='date'>{date}</span>
-              <StatusContainer className='status' status={status}>
+            <article key={id} className="job">
+              <span className="icon">{company.charAt(0)}</span>
+              <span className="position">{position.toLowerCase()}</span>
+              <span className="company">{company}</span>
+              <span className="date">{date}</span>
+              <StatusContainer className="status" status={status}>
                 {status}
               </StatusContainer>
-              <div className='action-div'>
-                <Link to={`/edit/${id}`} className='edit-btn' type='button'>
-                  <FaEdit />
-                </Link>
-                <button
-                  className=' delete-btn'
-                  type='button'
-                  onClick={() => deleteJob(id)}
-                >
-                  <FaTrash />
-                </button>
+              <div className="action-div">
+                {allFavorites.includes(id) ? (
+                  <FaStar
+                    className="favorite-btn"
+                    onClick={() => deleteFavorite(id)}
+                  />
+                ) : (
+                  <FaStar
+                    className="not-favorite-btn"
+                    onClick={() => {
+                      userId ? createFavorite(id) : navigate.push("/register");
+                    }}
+                  />
+                )}
+                {console.log("createdBy: ", createdBy, " userId: ", userId)}
+                {createdBy === userId && (
+                  <>
+                    <Link to={`/edit/${id}`} className="edit-btn" type="button">
+                      <FaEdit />
+                    </Link>
+
+                    <button
+                      className=" delete-btn"
+                      type="button"
+                      onClick={() => deleteJob(id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </>
+                )}
               </div>
             </article>
           );
@@ -113,6 +161,26 @@ const Container = styled.section`
   }
   .edit-btn {
     color: var(--green-dark);
+    border-color: transparent;
+    background: transparent !important;
+    outline: transparent;
+    border-radius: var(--borderRadius);
+    cursor: pointer;
+    display: inline-block;
+    appearance: none;
+  }
+  .not-favorite-btn {
+    color: var(--grey-400);
+    border-color: transparent;
+    background: transparent !important;
+    outline: transparent;
+    border-radius: var(--borderRadius);
+    cursor: pointer;
+    display: inline-block;
+    appearance: none;
+  }
+  .favorite-btn {
+    color: var(--golden-light);
     border-color: transparent;
     background: transparent !important;
     outline: transparent;
@@ -193,14 +261,14 @@ const Container = styled.section`
   }
 `;
 const setStatusColor = (status) => {
-  if (status === 'interview') return '#0f5132';
-  if (status === 'declined') return '#842029';
-  return '#927238';
+  if (status === "interview") return "#0f5132";
+  if (status === "declined") return "#842029";
+  return "#927238";
 };
 const setStatusBackground = (status) => {
-  if (status === 'interview') return '#d1e7dd';
-  if (status === 'declined') return '#f8d7da';
-  return '#f7f3d7';
+  if (status === "interview") return "#d1e7dd";
+  if (status === "declined") return "#f8d7da";
+  return "#f7f3d7";
 };
 
 const StatusContainer = styled.span`

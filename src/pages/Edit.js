@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useParams, Redirect, Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { useGlobalContext } from '../context/appContext';
-import FormRow from '../components/FormRow';
-import Navbar from '../components/Navbar';
+import { useState, useEffect } from "react";
+import { useParams, Redirect, Link } from "react-router-dom";
+import styled from "styled-components";
+import { useGlobalContext } from "../context/appContext";
+import FormRow from "../components/FormRow";
+import Navbar from "../components/Navbar";
 function Update() {
   const { id } = useParams();
   const {
@@ -17,9 +17,9 @@ function Update() {
   } = useGlobalContext();
 
   const [values, setValues] = useState({
-    company: '',
-    position: '',
-    status: '',
+    company: "",
+    position: "",
+    status: "",
   });
 
   useEffect(() => {
@@ -44,17 +44,17 @@ function Update() {
     }
   };
   if (isLoading && !editItem) {
-    return <div className='loading'></div>;
+    return <div className="loading"></div>;
   }
 
   if (!editItem || error) {
     return (
       <>
-        {!user && <Redirect to='/' />}
-        <ErrorContainer className='page'>
+        {!user && <Redirect to="/" />}
+        <ErrorContainer className="page">
           <h5>There was an error, please double check your job ID</h5>
 
-          <Link to='/dashboard' className='btn'>
+          <Link to="/dashboard" className="btn">
             dasboard
           </Link>
         </ErrorContainer>
@@ -63,52 +63,52 @@ function Update() {
   }
   return (
     <>
-      {!user && <Redirect to='/' />}
+      {!user && <Redirect to="/" />}
       <Navbar />
-      <Container className='page'>
+      <Container className="page">
         <header>
-          <Link to='/dashboard' className='btn btn-block back-home'>
+          <Link to="/dashboard" className="btn btn-block back-home">
             back home
           </Link>
         </header>
-        <form className='form' onSubmit={handleSubmit}>
-          <p>{editComplete && 'Success! Edit Complete'}</p>
+        <form className="form" onSubmit={handleSubmit}>
+          <p>{editComplete && "Success! Edit Complete"}</p>
           <h4>Update Job</h4>
           {/* company */}
-          <div className='form-container'>
+          <div className="form-container">
             <FormRow
-              type='name'
-              name='position'
+              type="name"
+              name="position"
               value={values.position}
               handleChange={handleChange}
             />
             <FormRow
-              type='name'
-              name='company'
+              type="name"
+              name="company"
               value={values.company}
               handleChange={handleChange}
             />
-            <div className='form-row'>
-              <label htmlFor='status' className='form-label'>
-                Status
+            <div className="form-row">
+              <label htmlFor="status" className="form-label">
+                Salary
               </label>
               <select
-                name='status'
+                name="status"
                 value={values.status}
                 onChange={handleChange}
-                className='status'
+                className="status"
               >
-                <option value='pending'>pending</option>
-                <option value='interview'>interview</option>
-                <option value='declined'>declined</option>
+                <option value="under45k">&lt; 45K</option>
+                <option value="between45k-70k"> 45K-70k</option>
+                <option value="morethan70k">&gt; 70K </option>
               </select>
             </div>
             <button
-              type='submit'
-              className='btn btn-block submit-btn'
+              type="submit"
+              className="btn btn-block submit-btn"
               disabled={isLoading}
             >
-              {isLoading ? 'Editing...' : 'Edit'}
+              {isLoading ? "Editing..." : "Edit"}
             </button>
           </div>
         </form>

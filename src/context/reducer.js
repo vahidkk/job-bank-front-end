@@ -15,6 +15,11 @@ import {
   EDIT_JOB_SUCCESS,
   FETCH_ALL_JOBS_SUCCESS,
   FETCH_ALLL_JOBS_ERROR,
+  FETCH_ALL_FAVORITES_SUCCESS,
+  FETCH_ALLL_FAVORITES_ERROR,
+  CREATE_FAVORITE_SUCCESS,
+  CREATE_FAVORITE_ERROR,
+  DELETE_FAVORITE_ERROR,
 } from "./actions";
 
 const reducer = (state, action) => {
@@ -26,7 +31,8 @@ const reducer = (state, action) => {
     return {
       ...state,
       isLoading: false,
-      user: action.payload,
+      user: action.payload.name,
+      userId: action.payload.id,
     };
   }
   if (action.type === REGISTER_USER_ERROR) {
@@ -39,14 +45,20 @@ const reducer = (state, action) => {
   }
 
   if (action.type === SET_USER) {
-    return { ...state, user: action.payload };
+    return {
+      ...state,
+      user: action.payload.name,
+      userId: action.payload.userId,
+    };
   }
   if (action.type === LOGOUT_USER) {
     return {
       ...state,
       user: null,
+      userId: null,
       showAlert: false,
       jobs: [],
+      favorites: [],
       isEditing: false,
       editItem: null,
     };
@@ -70,7 +82,7 @@ const reducer = (state, action) => {
       editItem: null,
       singleJobError: false,
       editComplete: false,
-      jobs: action.payload,
+      allJobs: action.payload,
     };
   }
   if (action.type === FETCH_JOBS_ERROR) {
@@ -125,6 +137,44 @@ const reducer = (state, action) => {
       showAlert: true,
     };
   }
+
+  if (action.type === FETCH_ALL_FAVORITES_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      editItem: null,
+      singleJobError: false,
+      editComplete: false,
+      favorites: action.payload,
+    };
+  }
+
+  if (action.type === FETCH_ALLL_FAVORITES_ERROR) {
+    return { ...state, isLoading: false };
+  }
+  if (action.type === CREATE_FAVORITE_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      favorites: [...state.favorites, action.payload],
+    };
+  }
+  if (action.type === CREATE_FAVORITE_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+    };
+  }
+
+  if (action.type === DELETE_FAVORITE_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+    };
+  }
+
   throw new Error(`no such action : ${action}`);
 };
 

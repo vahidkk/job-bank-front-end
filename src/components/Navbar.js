@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { FaUserCircle, FaCaretDown } from "react-icons/fa";
 import { useGlobalContext } from "../context/appContext";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ loginPage }) => {
   const { user, logout } = useGlobalContext();
@@ -11,7 +12,9 @@ const Navbar = ({ loginPage }) => {
     <Wrapper p={loginPage}>
       {/* {console.log("p", loginPage)} */}
       <div className="nav-center">
-        <h2 className="logo-type">Job Bank</h2>
+        <Link to={`/`}>
+          <h2 className="logo-type">Job Bank</h2>
+        </Link>
         {user && (
           <div className="btn-container">
             <button className="btn" onClick={() => setShowLogout(!showLogout)}>

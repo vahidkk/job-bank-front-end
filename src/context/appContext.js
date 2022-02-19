@@ -18,6 +18,11 @@ import {
   EDIT_JOB_ERROR,
   FETCH_ALL_JOBS_SUCCESS,
   FETCH_ALLL_JOBS_ERROR,
+  FETCH_ALL_FAVORITES_SUCCESS,
+  FETCH_ALLL_FAVORITES_ERROR,
+  CREATE_FAVORITE_SUCCESS,
+  CREATE_FAVORITE_ERROR,
+  DELETE_FAVORITE_ERROR,
 } from "./actions";
 import reducer from "./reducer";
 
@@ -25,6 +30,8 @@ const initialState = {
   user: null,
   isLoading: false,
   jobs: [],
+  allJobs: [],
+  favorites: [],
   showAlert: false,
   editItem: null,
   singleJobError: false,
@@ -64,10 +71,14 @@ const AppProvider = ({ children }) => {
       const { data } = await axios.post(`/auth/login`, {
         ...userInput,
       });
-      dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user.name });
+      dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user });
       localStorage.setItem(
         "user",
-        JSON.stringify({ name: data.user.name, token: data.token })
+        JSON.stringify({
+          name: data.user.name,
+          userId: data.user.id,
+          token: data.token,
+        })
       );
     } catch (error) {
       dispatch({ type: REGISTER_USER_ERROR });
@@ -122,6 +133,7 @@ const AppProvider = ({ children }) => {
       await axios.delete(`/jobs/${jobId}`);
 
       fetchJobs();
+      fetchAllJobs();
     } catch (error) {
       dispatch({ type: DELETE_JOB_ERROR });
     }
@@ -148,11 +160,57 @@ const AppProvider = ({ children }) => {
     }
   };
 
+  //fetch all favorites by current user :
+  const fetchAllFavorites = async () => {
+    setLoading();
+    try {
+      const { data } = await axios.get(`/favorites`);
+      dispatch({ type: FETCH_ALL_FAVORITES_SUCCESS, payload: data.favorites });
+    } catch (error) {
+      dispatch({ type: FETCH_ALLL_FAVORITES_ERROR });
+      // logout()
+    }
+  };
+  const createFavorite = async (favoriteJobId) => {
+    setLoading();
+    try {
+      const { data } = await axios.post(`/favorites`, {
+        jobId: favoriteJobId,
+      });
+      fetchAllFavorites();
+
+      dispatch({ type: CREATE_FAVORITE_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({ type: CREATE_FAVORITE_ERROR });
+    }
+  };
+  const deleteFavorite = async (favoriteJobId) => {
+    setLoading();
+    try {
+      await axios.delete(`/favorites/${favoriteJobId}`);
+      // await axios.delete(`/favorites/620b6e4269cb77a477b01542`);
+      fetchAllFavorites();
+    } catch (error) {
+      dispatch({ type: DELETE_FAVORITE_ERROR });
+    }
+  };
+
+  // const deleteJob = async (jobId) => {
+  //   setLoading();
+  //   try {
+  //     await axios.delete(`/jobs/${jobId}`);
+
+  //     fetchJobs();
+  //   } catch (error) {
+  //     dispatch({ type: DELETE_JOB_ERROR });
+  //   }
+  // };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       const newUser = JSON.parse(user);
-      dispatch({ type: SET_USER, payload: newUser.name });
+      dispatch({ type: SET_USER, payload: newUser });
     }
   }, []);
   return (
@@ -168,6 +226,10 @@ const AppProvider = ({ children }) => {
         deleteJob,
         fetchSingleJob,
         editJob,
+        fetchAllJobs,
+        fetchAllFavorites,
+        createFavorite,
+        deleteFavorite,
       }}
     >
       {children}

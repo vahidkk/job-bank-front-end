@@ -1,36 +1,46 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import main from "../assets/briefcase2.png";
-import { Redirect } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Jobs from "../components/Jobs";
 import { useEffect } from "react";
 import { useGlobalContext } from "../context/appContext";
+
 function Home() {
-  const { isLoading, showAlert, fetchJobs, user } = useGlobalContext();
+  const { isLoading, showAlert, fetchAllJobs, userId, fetchAllFavorites } =
+    useGlobalContext();
 
   useEffect(() => {
-    fetchJobs();
+    fetchAllJobs();
+    fetchAllFavorites();
   }, []);
 
   return (
     <>
-      {/* {user && <Redirect to="/dashboard" />} */}
+      <Navbar />
       <Wrapper>
-        <Navbar />
         <div className="container page">
           <div className="info">
             <h1>Looking for a job ? </h1>
             <h5>
-              Register to make one of the available jobs as your favorite job
+              {!userId && "Register to "} make one of the available jobs as your
+              favorite job
             </h5>
             <br />
             <h1>Got a free position ? </h1>
-            <h5>Register to add/edit/delete a job position to our database</h5>
-
-            <Link to="/register" className="btn hero-btn">
-              Login / Register
-            </Link>
+            <h5>
+              {!userId && "Register to"} add/edit/delete a job position to our
+              database
+            </h5>
+            {!userId ? (
+              <Link to="/register" className="btn hero-btn">
+                Login / Register
+              </Link>
+            ) : (
+              <Link to="/dashboard" className="btn hero-btn">
+                My Dashboard
+              </Link>
+            )}
           </div>
           <img src={main} alt="job " className="img main-img" />
         </div>
