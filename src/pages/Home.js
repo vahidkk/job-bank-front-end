@@ -32,15 +32,17 @@ function Home() {
               {!userId && "Register to"} add/edit/delete a job position to our
               database
             </h5>
-            {!userId ? (
-              <Link to="/register" className="btn hero-btn">
-                Login / Register
-              </Link>
-            ) : (
-              <Link to="/dashboard" className="btn hero-btn">
-                My Dashboard
-              </Link>
-            )}
+            <h5>
+              {!userId ? (
+                <Link to="/register" className="btn hero-btn">
+                  Login / Register
+                </Link>
+              ) : (
+                <Link to="/dashboard" className="btn hero-btn">
+                  My Dashboard
+                </Link>
+              )}
+            </h5>
           </div>
           <img src={main} alt="job " className="img main-img" />
         </div>
@@ -68,7 +70,12 @@ const Wrapper = styled.div`
     align-items: center;
   }
   h1 {
-    font-weight: 700;
+    /* font-weight: 700; */
+    font-size: calc(100% + 1vw + 1vh);
+  }
+  h5 {
+    /* font-weight: 700; */
+    font-size: calc(20% + 0.5vw + 1.5vh);
   }
   .main-img {
     display: none;

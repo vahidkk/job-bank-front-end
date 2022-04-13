@@ -85,7 +85,7 @@ function Register() {
                 onClick={toggleMember}
                 className="member-btn"
               >
-                {values.isMember ? "Register" : "Login"}
+                {values.isMember ? "Register" : "Login?"}
               </button>
             </p>
           </form>
